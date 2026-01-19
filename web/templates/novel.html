@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小说管理</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body data-page="novel" data-novel-id="{{NOVEL_ID}}">
+    <div class="page split">
+      <aside class="sidebar">
+        <div class="brand">小说管理</div>
+        <nav class="menu">
+          <button class="menu-item active" data-section="story">故事背景</button>
+          <button class="menu-item" data-section="advanced">高级设计</button>
+        </nav>
+      </aside>
+      <main class="content">
+        <header class="content-header">
+          <div>
+            <h1 id="novel-title">故事背景</h1>
+            <p class="sub">整理世界观与主线脉络</p>
+          </div>
+          <button id="save-btn" class="primary">保存</button>
+        </header>
+
+        <div class="section-group active" data-section="story">
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">故事背景</div>
+                <div class="field-sub">世界观、时代、环境、核心矛盾</div>
+              </div>
+              <button class="ghost" data-optimize="background">AI优化</button>
+            </div>
+            <textarea id="background" rows="6" placeholder="写下故事的整体背景"></textarea>
+          </section>
+
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">主线</div>
+                <div class="field-sub">主角目标与主要冲突</div>
+              </div>
+              <button class="ghost" data-optimize="mainline">AI优化</button>
+            </div>
+            <textarea id="mainline" rows="6" placeholder="写下主线剧情"></textarea>
+          </section>
+
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">暗线</div>
+                <div class="field-sub">隐藏线索、伏笔与背后势力</div>
+              </div>
+              <button class="ghost" data-optimize="darkline">AI优化</button>
+            </div>
+            <textarea id="darkline" rows="6" placeholder="写下暗线剧情"></textarea>
+          </section>
+        </div>
+
+        <div class="section-group" data-section="advanced">
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">小说风格</div>
+                <div class="field-sub">语言质感、节奏与叙事气质</div>
+              </div>
+              <button class="ghost" data-optimize="style">AI优化</button>
+            </div>
+            <textarea id="style" rows="6" placeholder="描述小说风格"></textarea>
+          </section>
+
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">核诡设计</div>
+                <div class="field-sub">核心谜题与关键布局</div>
+              </div>
+              <button class="ghost" data-optimize="core_design">AI优化</button>
+            </div>
+            <textarea id="core_design" rows="6" placeholder="描述核诡设计"></textarea>
+          </section>
+
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">反转设计</div>
+                <div class="field-sub">反转时机与信息差安排</div>
+              </div>
+              <button class="ghost" data-optimize="reversal">AI优化</button>
+            </div>
+            <textarea id="reversal" rows="6" placeholder="描述反转设计"></textarea>
+          </section>
+
+          <section class="card">
+            <div class="field-header">
+              <div>
+                <div class="field-title">小说亮点</div>
+                <div class="field-sub">卖点、读者记忆点与差异化</div>
+              </div>
+              <button class="ghost" data-optimize="highlights">AI优化</button>
+            </div>
+            <textarea id="highlights" rows="6" placeholder="描述小说亮点"></textarea>
+          </section>
+        </div>
+
+        <div id="status" class="status"></div>
+      </main>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

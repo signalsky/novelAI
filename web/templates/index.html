@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人主页</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body data-page="home">
+    <div class="page">
+      <header class="header">
+        <div>
+          <h1>个人主页</h1>
+          <p class="sub">欢迎来到你的小说空间</p>
+        </div>
+        <div class="create">
+          <input id="novel-title" type="text" placeholder="输入小说名称" />
+          <button id="create-btn">创建小说</button>
+        </div>
+      </header>
+
+      <section class="section">
+        <div class="section-title">我的小说</div>
+        <div id="novel-list" class="novel-list empty">
+          <div class="empty-state">暂无小说，创建第一本吧</div>
+        </div>
+      </section>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
