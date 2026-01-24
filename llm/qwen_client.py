@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
-from typing import Any, Optional
+from typing import Any, Iterable, Optional
 
 from config.loader import BaseConfig, get_base_config
 from config.log import get_logger
@@ -45,6 +45,40 @@ class QwenClient:
             _logger.exception("调用Qwen模型失败 (base_url=%s, model=%s)", self.base_url, self.model)
             return None
 
+    def chat_messages(self, messages: list[dict[str, Any]]) -> Optional[str]:
+        try:
+            completion = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+            )
+            return completion.choices[0].message.content
+        except Exception:
+            _logger.exception(
+                "调用Qwen模型失败 (base_url=%s, model=%s)", self.base_url, self.model
+            )
+            return None
+
+    def chat_messages_stream(self, messages: list[dict[str, Any]]) -> Iterable[str]:
+        try:
+            stream = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                stream=True,
+            )
+            for chunk in stream:
+                try:
+                    delta = chunk.choices[0].delta
+                    content = getattr(delta, "content", None)
+                    if isinstance(content, str) and content:
+                        yield content
+                except Exception:
+                    continue
+        except Exception:
+            _logger.exception(
+                "调用Qwen模型失败 (stream, base_url=%s, model=%s)", self.base_url, self.model
+            )
+            return
+
 
 def extract_json_from_text(text: Optional[str]) -> Optional[dict[str, Any]]:
     if not text:
@@ -69,4 +103,3 @@ def extract_json_from_text(text: Optional[str]) -> Optional[dict[str, Any]]:
     except Exception:
         _logger.exception("JSON解析失败")
         return None
-

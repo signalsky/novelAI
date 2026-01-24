@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>小说管理</title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/style.css?v=11" />
   </head>
   <body data-page="novel" data-novel-id="{{NOVEL_ID}}">
     <div class="page split">
@@ -108,6 +108,52 @@
         <div id="status" class="status"></div>
       </main>
     </div>
-    <script src="/static/app.js"></script>
+    <div id="optimize-modal" class="modal">
+      <div class="modal-content modal-split">
+        <button id="optimize-close" class="modal-close-x" type="button" aria-label="关闭" title="关闭">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="modal-left">
+          <div class="modal-header">
+            <div>
+              <div class="modal-title">AI 优化</div>
+              <div class="modal-sub">补充提示词与要求</div>
+            </div>
+          </div>
+          <div class="modal-body">
+            <label class="modal-label" for="optimize-prompt">提示词</label>
+            <textarea id="optimize-prompt" rows="4" placeholder="输入优化方向、要求、风格等"></textarea>
+            <label class="modal-label" for="optimize-result">AI 结果</label>
+            <textarea id="optimize-result" rows="10" placeholder="等待生成结果" readonly></textarea>
+          </div>
+          <div class="modal-actions">
+            <button id="optimize-submit">生成优化</button>
+            <button id="optimize-apply" class="ghost">保留</button>
+            <button id="optimize-revert" class="ghost">撤销</button>
+          </div>
+        </div>
+
+        <div class="modal-right">
+          <div class="chat-panel">
+            <div class="chat-title">对话</div>
+            <div id="chat-history" class="chat-history"></div>
+            <div class="chat-footer">
+              <textarea id="chat-input" rows="3" placeholder="输入你的问题"></textarea>
+              <div class="chat-actions">
+                <label class="chat-toggle">
+                  <input id="chat-search" type="checkbox" />
+                  搜索
+                </label>
+                <button id="chat-send">发送</button>
+                <button id="chat-clear" class="ghost">清空</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/static/app.js?v=9"></script>
   </body>
 </html>

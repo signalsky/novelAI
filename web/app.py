@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -43,8 +43,14 @@ class AdvancedPayload(BaseModel):
 
 
 class OptimizeRequest(BaseModel):
-    text: str = ""
+    original: str = ""
+    instruction: str = ""
     field: str = ""
+
+
+class ChatSendRequest(BaseModel):
+    message: str = ""
+    use_search: bool = False
 
 
 def _oss() -> OssStorage:
@@ -195,8 +201,53 @@ def save_advanced(novel_id: str, payload: AdvancedPayload) -> dict[str, Any]:
 
 @app.post("/api/optimize")
 def optimize(payload: OptimizeRequest) -> dict[str, Any]:
-    text = payload.text.strip()
+    from novel_gen import optimize_text
+
+    text = optimize_text(
+        original=payload.original,
+        instruction=payload.instruction,
+        field=payload.field,
+    )
     return {"text": text}
+
+
+@app.get("/api/chat/history")
+def chat_history() -> dict[str, Any]:
+    from novel_gen.chat import get_history
+
+    return {"messages": get_history()}
+
+
+@app.post("/api/chat/send")
+def chat_send(payload: ChatSendRequest) -> dict[str, Any]:
+    from novel_gen.chat import send_message
+
+    assistant = send_message(message=payload.message, use_search=payload.use_search)
+    return {"assistant": assistant}
+
+
+@app.post("/api/chat/send_stream")
+def chat_send_stream(payload: ChatSendRequest) -> StreamingResponse:
+    from novel_gen.chat import send_message_stream
+
+    def gen():
+        for part in send_message_stream(message=payload.message, use_search=payload.use_search):
+            if part:
+                yield part
+
+    return StreamingResponse(
+        gen(),
+        media_type="text/plain; charset=utf-8",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+@app.post("/api/chat/clear")
+def chat_clear() -> dict[str, Any]:
+    from novel_gen.chat import clear_history
+
+    clear_history()
+    return {"ok": True}
 
 
 if __name__ == "__main__":

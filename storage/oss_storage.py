@@ -20,6 +20,25 @@ def _normalize_key(key: str) -> str:
     return (key or "").lstrip("/")
 
 
+def _is_not_found_error(exc: Exception) -> bool:
+    name = exc.__class__.__name__
+    status = getattr(exc, "status", None)
+    code = getattr(exc, "code", None)
+
+    details = getattr(exc, "details", None)
+    if details is not None:
+        status = status or getattr(details, "status", None)
+        code = code or getattr(details, "code", None)
+
+    if code in {"NoSuchKey", "NoSuchObject"}:
+        return True
+    if status == 404 and (code in {None, "NoSuchKey", "NoSuchObject"} or name in {"NoSuchKey"}):
+        return True
+    if "NoSuchKey" in str(exc):
+        return True
+    return False
+
+
 class OssStorage:
     def __init__(self, cfg: Optional[OssConfig] = None) -> None:
         self.cfg = cfg or get_oss_config()
@@ -63,7 +82,10 @@ class OssStorage:
             data = obj.read()
             _logger.info("OSS get_text ok (bucket=%s, key=%s)", self.cfg.bucket, k)
             return data.decode(encoding)
-        except Exception:
+        except Exception as exc:
+            if _is_not_found_error(exc):
+                _logger.info("OSS get_text miss (bucket=%s, key=%s)", self.cfg.bucket, k)
+                return ""
             _logger.exception("OSS get_text failed (bucket=%s, key=%s)", self.cfg.bucket, k)
             raise
 
@@ -108,4 +130,3 @@ class OssStorage:
         except Exception:
             _logger.exception("OSS sign_url failed (bucket=%s, key=%s)", self.cfg.bucket, k)
             raise
-
